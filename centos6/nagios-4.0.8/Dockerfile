@@ -2,7 +2,7 @@
 FROM centos:centos6
 
 # me!
-MAINTAINER boardstretcher version: 0.1
+MAINTAINER szboardstretcher version: 0.1
 
 # update container
 RUN yum -y update
