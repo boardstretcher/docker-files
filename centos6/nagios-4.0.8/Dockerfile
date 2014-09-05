@@ -1,0 +1,59 @@
+# Install Nagios on Centos 6.5
+FROM centos:centos6
+
+# me!
+MAINTAINER boardstretcher version: 0.1
+
+# update container
+RUN yum -y update
+RUN yum -y install epel-release
+RUN yum -y install gd gd-devel wget httpd php gcc perl tar sendmail supervisor openssh-server
+ 
+# users and groups
+RUN adduser nagios
+RUN groupadd nagcmd
+RUN usermod -a -G nagcmd nagios
+RUN usermod -a -G nagios apache
+RUN echo 'root:ajbe928g39asjvb'|chpasswd
+ 
+# get archives
+ADD http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.8.tar.gz nagios-4.0.8.tar.gz
+ADD http://nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz nagios-plugins-2.0.3.tar.gz
+ 
+# install nagios
+RUN tar xf nagios-4.0.8.tar.gz
+RUN cd nagios-4.0.8 && ./configure --with-command-group=nagcmd
+RUN cd nagios-4.0.8 && make all && make install && make install-init
+RUN cd nagios-4.0.8 && make install-config &&  make install-commandmode && make install-webconf
+
+# user/password = nagiosadmin/nagiosadmin
+RUN echo "nagiosadmin:$apr1$mKrYEH9B$BXAAxk5iGY6KYaVAIlrc3." > /usr/local/nagios/etc/htpasswd.users
+
+# install plugins
+RUN tar xf nagios-plugins-2.0.3.tar.gz
+RUN cd nagios-plugins-2.0.3 && ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+RUN cd nagios-plugins-2.0.3 && make && make install
+ 
+# create initial config
+RUN /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+ 
+# some bug fixes
+RUN touch /var/www/html/index.html
+RUN chown nagios.nagcmd /usr/local/nagios/var/rw
+RUN chmod g+rwx /usr/local/nagios/var/rw
+RUN chmod g+s /usr/local/nagios/var/rw
+ 
+# init bug fix
+RUN sed -i '/$NagiosBin -d $NagiosCfgFile/a (sleep 10; chmod 666 \/usr\/local\/nagios\/var\/rw\/nagios\.cmd) &' /etc/init.d/nagios
+ 
+# remove gcc
+RUN yum -y remove gcc
+
+# port 80
+EXPOSE 22 25 80
+
+# supervisor configuration
+ADD supervisord.conf /etc/supervisord.conf
+
+# start up nagios, sendmail, apache
+CMD ["/usr/bin/supervisord"]
