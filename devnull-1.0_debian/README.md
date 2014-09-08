@@ -6,15 +6,19 @@ Built with latest Debian and Nginx, and version 1.0 of DaaS
 ## Installation
 Use docker to build the container and then run it on port 80.
 
- git clone https://github.com/boardstretcher/docker-files.git
- cd docker-files/devnull-1.0_debian
- docker build -t devnull .
- docker run -p 80:80 -d devnull
+```
+git clone https://github.com/boardstretcher/docker-files.git
+cd docker-files/devnull-1.0_debian
+docker build -t devnull .
+docker run -p 80:80 -d devnull
+```
 
 You may then test with a curl command that your information is being dropped by dev/null
 
- touch this
- curl -v -d @this -X POST http://your-ip-address/dev/null
+```
+touch this
+curl -v -d @this -X POST http://your-ip-address/dev/null
+```
 
 ## About
 
