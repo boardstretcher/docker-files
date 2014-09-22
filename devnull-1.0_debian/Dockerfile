@@ -20,5 +20,4 @@ EXPOSE 9
 EXPOSE 80
 
 # start up nginx
-CMD ["/usr/sbin/inetd"]
-CMD ["nginx"]
+CMD /usr/sbin/inetd && nginx
