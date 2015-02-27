@@ -1,3 +1,7 @@
+# Docker containers are supposedly made to run 1 service per container,.
+# this is a dev container for testing nagios quickly - it runs all the
+# services needed in one container. Do NOT USE THIS IN PRODUCTION.
+
 # Install Nagios on Centos 6.5
 FROM centos:centos6
 
@@ -16,9 +20,9 @@ RUN usermod -a -G nagcmd nagios
 RUN usermod -a -G nagios apache
  
 # get archives
-ADD http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.8.tar.gz nagios-4.0.8.tar.gz
-ADD http://nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz nagios-plugins-2.0.3.tar.gz
- 
+ADD http://downloads.sourceforge.net/project/nagios/nagios-4.x/nagios-4.0.8/nagios-4.0.8.tar.gz nagios-4.0.8.tar.gz
+ADD http://www.nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz nagios-plugins-2.0.3.tar.gz
+
 # install nagios
 RUN tar xf nagios-4.0.8.tar.gz
 RUN cd nagios-4.0.8 && ./configure --with-command-group=nagcmd
