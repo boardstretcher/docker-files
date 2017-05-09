@@ -1,0 +1,10 @@
+{
+    "redis": {
+        "host": {{ .REDIS_HOST | quote }},
+        "port": {{ .REDIS_PORT | quote }},
+
+        "db": 0,
+        "auto_reconnect": true,
+        "reconnect_on_error": false
+    }
+}
