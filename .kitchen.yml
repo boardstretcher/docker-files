@@ -1,0 +1,32 @@
+---
+driver:
+  name: docker
+  forward: 9000:9000
+  
+provisioner:
+  name: chef_zero
+  environments_path: environments
+  roles_path: roles
+  solo_rb:
+    environment: us4
+
+platforms:
+  - name: centos-7
+    driver_config:
+      image: centos:7.4.1708
+      privileged: true
+      run_command: /usr/sbin/init
+      hostname: mytestbox01
+      dns: 4.2.2.2
+      instance_name: mytestbox01
+    attributes: 
+      authorization: 
+        sudo: 
+            users: ['kitchen'] 
+            passwordless: true 
+            include_sudoers_d: true 
+
+suites:
+  - name: default
+    run_list:
+      - recipe[chef-client::default] 
